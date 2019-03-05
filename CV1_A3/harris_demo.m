@@ -10,7 +10,7 @@ I_pp_gd = im2double(I_pp_gray);
 % 'person_toy' image 
 %[H, r, c] = harris_corner_detection(I_pt_gd, 0.005);
 % 'pingpong' image
-%[H, r, c] = harris_corner_detection(I_pp_gd, 0.005);
+[H, r, c] = harris_corner_detection(I_pp_gd, 0.005);
 
 % Exercise 1.3
 Ipt_45 = imrotate(I_pt_gd, 45);
@@ -31,6 +31,4 @@ imshow(Ipt_90);
 hold on;
 plot(c_90, r_90, 'r*', 'LineWidth', 2, 'MarkerSize', 2);
 mt(2) = title('Rotated 90 degrees', 'fontsize', 25);
-
-
 
