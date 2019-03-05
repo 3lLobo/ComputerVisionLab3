@@ -1,10 +1,15 @@
-function [H, r, c] = harris_corner_detection(image, threshold)
+function [H, r, c] = harris_corner_detection(image, threshold, visual)
+
+if nargin < 3
+    visual = true;
+end
 
 G = gauss2D(1.5, [5,5]);
 emp_const = 0.04;
 
-I_gauss = imfilter(image, G, 'replicate');
-[Ix, Iy, ~, ~] = compute_gradient(I_gauss);
+I_g = imfilter(image, G, 'replicate');
+[Ix, Iy, ~, ~] = compute_gradient(I_g);
+%[Ix,Iy] = imgradientxy(I_g);
 
 Ix_sq = Ix.^2;
 Iy_sq = Iy.^2;
@@ -40,18 +45,21 @@ end
 r = corners(:, 1);
 c = corners(:, 2);
 
-figure(2);
-subplot(1,3,1)
-imshow(Ix);
-mt(1) = title('\it{\bf{I}_x}', 'fontsize', 25);
-subplot(1,3,2)
-imshow(Iy);
-mt(2) = title('\it{\bf{I}_y}', 'fontsize', 25);
-subplot(1,3,3)
-imshow(image);
-hold on;
-plot(c, r, 'r*', 'LineWidth', 2, 'MarkerSize', 2);
-mt(3) = title('Original with corners', 'fontsize', 25);
+if visual
+
+    figure(1);
+    subplot(1,3,1)
+    imshow(Ix);
+    mt(1) = title('\it{\bf{I}_x}', 'fontsize', 25);
+    subplot(1,3,2)
+    imshow(Iy);
+    mt(2) = title('\it{\bf{I}_y}', 'fontsize', 25);
+    subplot(1,3,3)
+    imshow(image);
+    hold on;
+    plot(c, r, 'r*', 'LineWidth', 2, 'MarkerSize', 2);
+    mt(3) = title('Original with corners', 'fontsize', 25);
+end
 
 end
 
