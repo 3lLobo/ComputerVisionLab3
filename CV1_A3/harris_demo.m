@@ -1,3 +1,5 @@
+function [] = harris_demo()
+
 I_pt = imread('person_toy/00000001.jpg');
 I_pt_gray = rgb2gray(I_pt);
 I_pt_gd = im2double(I_pt_gray);
@@ -8,16 +10,16 @@ I_pp_gd = im2double(I_pp_gray);
 
 % Exercise 1.1 and 1.2
 % 'person_toy' image 
-%[H, r, c] = harris_corner_detection(I_pt_gd, 0.005);
+[H, r, c] = harris_corner_detection(I_pt_gd, 0.005);
 % 'pingpong' image
-[H, r, c] = harris_corner_detection(I_pp_gd, 0.005);
+% [H, r, c] = harris_corner_detection(I_pp_gd, 0.005);
 
 % Exercise 1.3
 Ipt_45 = imrotate(I_pt_gd, 45);
-[H_45, r_45, c_45] = harris_corner_detection(Ipt_45, 0.005, false);
+[~, r_45, c_45] = harris_corner_detection(Ipt_45, 0.005, false);
 
 Ipt_90 = imrotate(I_pt_gd, 90);
-[H_90, r_90, c_90] = harris_corner_detection(Ipt_90, 0.005, false);
+[~, r_90, c_90] = harris_corner_detection(Ipt_90, 0.005, false);
 
 %
 figure(2);
@@ -32,3 +34,5 @@ hold on;
 plot(c_90, r_90, 'r*', 'LineWidth', 2, 'MarkerSize', 2);
 mt(2) = title('Rotated 90 degrees', 'fontsize', 25);
 
+
+end
