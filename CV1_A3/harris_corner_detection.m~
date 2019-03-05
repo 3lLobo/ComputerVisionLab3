@@ -8,7 +8,7 @@ I_gauss = imfilter(image, G, 'replicate');
 
 Ix_sq = double(Ix).^2;
 Iy_sq = double(Iy).^2;
-Ixy = double(Ix) .* double(Iy);
+Ixy = Ix .* Iy;
 
 A = imfilter(Ix_sq, G, 'replicate');
 C = imfilter(Iy_sq, G, 'replicate');
@@ -22,27 +22,20 @@ B = imfilter(Ixy, G, 'replicate');
 H = (A.*C - B.^2)-emp_const*(A+C).^2;
 [rows, cols] = size(H);
 
-corners = zeros(1, 2); 
-corner_count = 1;
 
-for i = 2:rows-1 
-    for j = 2:cols-1
-        if H(i, j) > threshold
-            neighborh = H(i-1:i+1, j-1:j+1);
-            if eq(neighborh(2, 2), max(neighborh, [], 'all'))
-                corners(corner_count, :) = [i, j];
-                corner_count = corner_count + 1;
-            end
-        end
-    end
-end
+neighborhood = H(5-1:5+1, 5-1:5+1)
+max(neighborhood, [], 'all')
+eq(2.012, 2.012)
 
-size(corners)
+% for i = 1:rows 
+%     for j = 1:cols
+%         if H(i, j) > threshold
+%             neighborh = H(i-1:i+1, j-1:j+1);
+%             if eq(neighborh(2, 2), max(neighborh, [], 'all')
+%             
+% 
+%     end
+% end
 
-r = corners(:, 1);
-c = corners(:, 2);
 
 end
-
-
-    
