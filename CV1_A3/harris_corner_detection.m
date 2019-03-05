@@ -1,14 +1,15 @@
-function [H, c, r] = harris_corner_detection(image, threshold)
+function [H, r, c] = harris_corner_detection(image, threshold)
 
 G = gauss2D(1, [3,3]);
 emp_const = 0.04;
 
 I_gauss = imfilter(image, G, 'replicate');
-[Ix,Iy] = imgradientxy(I_gauss);
+%[Ix,Iy] = imgradientxy(I_gauss);
+[Ix, Iy, ~, ~] = compute_gradient(I_gauss);
 
-Ix_sq = double(Ix).^2;
-Iy_sq = double(Iy).^2;
-Ixy = double(Ix) .* double(Iy);
+Ix_sq = Ix.^2;
+Iy_sq = Iy.^2;
+Ixy = Ix .* Iy;
 
 A = imfilter(Ix_sq, G, 'replicate');
 C = imfilter(Iy_sq, G, 'replicate');
@@ -37,12 +38,25 @@ for i = 2:rows-1
     end
 end
 
-size(corners)
-
 r = corners(:, 1);
 c = corners(:, 2);
 
+figure(2);
+subplot(1,3,1)
+imshow(Ix);
+mt(1) = title('\it{\bf{I}_x}', 'fontsize', 25);
+subplot(1,3,2)
+imshow(Iy);
+mt(2) = title('\it{\bf{I}_y}', 'fontsize', 25);
+subplot(1,3,3)
+imshow(image);
+hold on;
+plot(c, r, 'r*', 'LineWidth', 2, 'MarkerSize', 2);
+mt(3) = title('Original with corners', 'fontsize', 25);
+
 end
+
+
 
 
     
