@@ -1,10 +1,9 @@
 function [H, r, c] = harris_corner_detection(image, threshold)
 
-G = gauss2D(1, [3,3]);
+G = gauss2D(1.5, [5,5]);
 emp_const = 0.04;
 
 I_gauss = imfilter(image, G, 'replicate');
-%[Ix,Iy] = imgradientxy(I_gauss);
 [Ix, Iy, ~, ~] = compute_gradient(I_gauss);
 
 Ix_sq = Ix.^2;

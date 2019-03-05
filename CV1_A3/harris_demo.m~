@@ -1,12 +1,13 @@
 
 
 I = imread('person_toy/00000001.jpg');
+I = imread('person_toy/00000001.jpg');
 I = rgb2gray(I);
 I = im2double(I);
 
-[H, r, c] = harris_corner_detection(I, 0.2);
+[H, r, c] = harris_corner_detection(I, 0.005);
 
 
-
+pingpong/0000.jpeg
 
 
