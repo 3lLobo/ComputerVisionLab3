@@ -1,46 +1,65 @@
 function tracking(folder)
-
     mainfolder = strcat(pwd, '\');
-    subfolder = 'pingpong\';
-
+    if strcmp(folder, 'pingpong')
+        subfolder = 'pingpong\';
+        filetypes = '*.jpeg';
+        filename = 'pingpong.gif';
+    else
+        subfolder = 'person_toy\';
+        filetypes = '*.jpg';
+        filename = 'person_toy.gif';
+    end
+        
     % Load all files
-    matfiles = dir(fullfile(mainfolder, subfolder, '*.jpeg'));
+    matfiles = dir(fullfile(mainfolder, subfolder, filetypes));
     nfiles = length(matfiles);
-
+    
     % Set values
     harris_treshold = 0.005;
-    window_size = 10;
+    window_size = 20;
+    vector_multiplier = 8;
 
     % Reading out first file
     I_pp = imread(fullfile(mainfolder, subfolder, matfiles(1).name));
     I_pp_gray = rgb2gray(I_pp);
     I_pp_gd = im2double(I_pp_gray);
-
+    [m,n] = size(I_pp_gray);
     % Calculate the positions in the first frame so:
     % Perform harris to get the corners c
     [H, r, c] = harris_corner_detection(I_pp_gd, harris_treshold, false);
 
     % So c are the features we want to track
 
-
+    f = figure('visible','off');
     for filenr = 1 : nfiles - 1
         % Getting the movement directions using lucas kanade:
         [dx, dy] = lucas_kanade_tracking_version(fullfile(mainfolder, subfolder, matfiles(filenr).name), fullfile(mainfolder, subfolder, matfiles(filenr+1).name), c, r, window_size);
         
         % Save temporary results to file
-        f = figure('visible','off');
+        
         imshow(fullfile(mainfolder, subfolder, matfiles(filenr).name));
         hold on;
         plot(c, r, 'r*', 'LineWidth', 2, 'MarkerSize', 2);
         %plot(c + dx, r + dy, 'g*', 'LineWidth', 2, 'MarkerSize', 2);
         quiver(c, r, dx, dy, 'color',[1 0 1]);
-
+        frame = getframe(f); 
+        im = frame2im(frame); 
         name = (['Feature tracking with window size ', num2str(window_size)]);
         title(name, 'fontsize', 15);
-        saveas(f, strcat(mainfolder,'results_pingpong\', erase(matfiles(filenr).name,'.jpg')));
-        c = c + dx;
-        r = r + dy;
+        [imind,cm] = rgb2ind(im,256);
+        
+        if filenr == 1 
+            imwrite(imind,cm,strcat(mainfolder,'results/', filename),'gif', 'Loopcount',inf,'DelayTime',0.1); 
+        else 
+            imwrite(imind,cm,strcat(mainfolder,'results/', filename),'gif','WriteMode','append','DelayTime',0.1); 
+        end 
+        
+        % imwrite(imind,cm,strcat(mainfolder,'results_', subfolder, 'video.gif'),'gif', 'Loopcount',inf); 
+        %saveas(f, strcat(mainfolder,'results_', subfolder, matfiles(filenr).name, '.jpg'));
+        c = c + (dx * vector_multiplier);
+        r = r + (dy * vector_multiplier);        
     end
+    
 end
 
 function [V_x, V_y] = lucas_kanade_tracking_version(path1, path2, c, r, window_size)
@@ -62,7 +81,8 @@ function [V_x, V_y] = lucas_kanade_tracking_version(path1, path2, c, r, window_s
 
     % (1) Divide input images on non-overlapping regions, 
     % each region being window_size × window_size.
-    %num_windows_x = floor(size(image1,1)/window_size);
+   c = floor(c);
+   r = floor(r);
     %num_windows_y = floor(size(image1,2)/window_size);
 
     % Save results in V_x and V_y
@@ -75,14 +95,15 @@ function [V_x, V_y] = lucas_kanade_tracking_version(path1, path2, c, r, window_s
     for i = 1:length(c)
 
         % Make sure the function doesnt go out of bound
-        x_1 = c(i) - (window_size / 2);
+        
+        x_1 = r(i) - (window_size / 2);
         if x_1 < 1
             x_1 = 1;
         elseif x_1 >= m - window_size
             x_1 = m - window_size - 1;
         end
 
-        y_1 = r(i) - (window_size / 2);
+        y_1 = c(i) - (window_size / 2);
         if y_1 < 1
             y_1 = 1;
         elseif y_1 >= n - window_size
@@ -94,7 +115,8 @@ function [V_x, V_y] = lucas_kanade_tracking_version(path1, path2, c, r, window_s
         y_2 = round(y_1 + window_size - 1);      
         % (2) For each region compute A, A.T and b. 
         % Then, estimate optical flow as given in Equation 20.
-
+        
+        
         % compute A
         i_x = I_x(x_1:x_2, y_1:y_2);
         i_y = I_y(x_1:x_2, y_1:y_2);
@@ -113,6 +135,7 @@ function [V_x, V_y] = lucas_kanade_tracking_version(path1, path2, c, r, window_s
     % replace NaN values with zeros
     V_x(isnan(V_x))=0;
     V_y(isnan(V_y))=0; 
+    
 
 end
 

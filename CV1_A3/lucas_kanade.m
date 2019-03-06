@@ -72,7 +72,7 @@ function [I_x, I_y] = prewitt_image_derivate(I)
     % I_y = I_y/6
 end
 
-function [I_bw] =  grayscale_image(I)
+function [I_bw] = grayscale_image(I)
     if size(I,3) == 3
         I_bw = rgb2gray(I);
     else
