@@ -30,6 +30,12 @@ H = (A.*C - B.^2)-emp_const*(A+C).^2;
 corners = zeros(1, 2); 
 corner_count = 1;
 
+% We interate from 2:rows/cols-1 for two reasons:
+% 1. We dont want to bloat our code with dealing with edge cases
+% 2. Given the provided example images, considering the image corners and edges 
+%    will not lead to a better performance. Instead probably to additional
+%    noise. We are aware that for other images considering these corner/edge 
+%    pixels might be important.  
 for i = 2:rows-1 
     for j = 2:cols-1
         if H(i, j) > threshold
@@ -49,15 +55,15 @@ if visual
 
     figure(1);
     subplot(1,3,1)
-    imshow(Ix);
+    imshow(mat2gray(Ix));
     mt(1) = title('\it{\bf{I}_x}', 'fontsize', 25);
     subplot(1,3,2)
-    imshow(Iy);
+    imshow(mat2gray(Iy));
     mt(2) = title('\it{\bf{I}_y}', 'fontsize', 25);
     subplot(1,3,3)
     imshow(image);
     hold on;
-    plot(c, r, 'r*', 'LineWidth', 2, 'MarkerSize', 2);
+    plot(c, r, 'r*', 'LineWidth', 3, 'MarkerSize', 3);
     mt(3) = title('Original with corners', 'fontsize', 25);
 end
 
