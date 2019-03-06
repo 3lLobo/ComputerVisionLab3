@@ -27,7 +27,6 @@ function tracking(folder)
     % Calculate the positions in the first frame so:
     % Perform harris to get the corners c
     [H, r, c] = harris_corner_detection(I_pp_gd, harris_treshold, false);
-
     % So c are the features we want to track
 
     f = figure('visible','off');
@@ -35,8 +34,7 @@ function tracking(folder)
         % Getting the movement directions using lucas kanade:
         [dx, dy] = lucas_kanade_tracking_version(fullfile(mainfolder, subfolder, matfiles(filenr).name), fullfile(mainfolder, subfolder, matfiles(filenr+1).name), c, r, window_size);
         
-        % Save temporary results to file
-        
+        % Saving to gif
         imshow(fullfile(mainfolder, subfolder, matfiles(filenr).name));
         hold on;
         plot(c, r, 'r*', 'LineWidth', 2, 'MarkerSize', 2);
@@ -46,16 +44,16 @@ function tracking(folder)
         im = frame2im(frame); 
         name = (['Feature tracking with window size ', num2str(window_size)]);
         title(name, 'fontsize', 15);
-        [imind,cm] = rgb2ind(im,256);
         
+        % GIF saving technique inspired by: 
+        % https://nl.mathworks.com/matlabcentral/answers/94495-how-can-i-create-animated-gif-images-in-matlab
+        [imind,cm] = rgb2ind(im,256);
         if filenr == 1 
             imwrite(imind,cm,strcat(mainfolder,'results/', filename),'gif', 'Loopcount',inf,'DelayTime',0.1); 
         else 
             imwrite(imind,cm,strcat(mainfolder,'results/', filename),'gif','WriteMode','append','DelayTime',0.1); 
         end 
         
-        % imwrite(imind,cm,strcat(mainfolder,'results_', subfolder, 'video.gif'),'gif', 'Loopcount',inf); 
-        %saveas(f, strcat(mainfolder,'results_', subfolder, matfiles(filenr).name, '.jpg'));
         c = c + (dx * vector_multiplier);
         r = r + (dy * vector_multiplier);        
     end
@@ -63,6 +61,7 @@ function tracking(folder)
 end
 
 function [V_x, V_y] = lucas_kanade_tracking_version(path1, path2, c, r, window_size)
+    % Modified version to work with features we want to track.
 
     % Read input images 
     image1 = im2double(imread(path1));
