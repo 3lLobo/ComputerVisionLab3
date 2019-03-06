@@ -1,3 +1,7 @@
+%##### Run Demo with: 
+% lucas_kanade_demo("pingpong/0004.jpeg", "pingpong/0005.jpeg", 12); 
+% lucas_kanade_demo("sphere1.ppm", "sphere2.ppm", 15) 
+% lucas_kanade_demo("synth1.pgm", "synth2.pgm", 15)
 function lucas_kanade_demo(path1, path2, window_size)
     [V_x, V_y] = lucas_kanade(path1, path2, window_size);
     plot_only_quiver(V_x, V_y, window_size);
