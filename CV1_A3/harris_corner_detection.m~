@@ -35,8 +35,7 @@ corner_count = 1;
 % 2. Given that provided example images do not have interesting points at
 %    its corners and edges, considering them will not lead to a better 
 %    performance. We are aware that for other images the consideration of
-%    these corner/edge pixels may be important.
-
+%    these corner/edge pixels can be important. 
 for i = 2:rows-1 
     for j = 2:cols-1
         if H(i, j) > threshold
