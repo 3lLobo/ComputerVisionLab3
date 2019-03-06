@@ -63,8 +63,8 @@ function [I_x, I_y] = prewitt_image_derivate(I)
     filter_y_prewitt = [1 1 1; 0 0 0; -1 -1 -1];
         
     % apply filters 
-    I_x = imfilter(I, filter_x_prewitt)
-    I_y = imfilter(I, filter_y_prewitt)
+    I_x = imfilter(I, filter_x_prewitt);
+    I_y = imfilter(I, filter_y_prewitt);
     
     % Normalize output; 1/6 is the normalization factor for the 
     % prewitt filters

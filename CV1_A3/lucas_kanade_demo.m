@@ -6,15 +6,17 @@ end
 
 function plot_only_quiver(V_x, V_y, win_size)
     i = ceil(win_size/2);
-    num_win = size(V_x, 1);
-    [x,y] = meshgrid(i:win_size:num_win*win_size,num_win*win_size:-win_size:i);
+    num_win_x = size(V_x, 2);
+    num_win_y = size(V_x, 1);
+    [x,y] = meshgrid(i:win_size:num_win_x*win_size,num_win_y*win_size:-win_size:i);
     quiver(x,y,V_x,-V_y, 'color',[1 0 1]);  
 end
 
 function plot_on_image(path, V_x, V_y, win_size)    
     i = ceil(win_size/2);
-    num_win = size(V_x, 1);
-    [x,y] = meshgrid(i:win_size:num_win*win_size,i:win_size:num_win*win_size);
+    num_win_x = size(V_x, 2);
+    num_win_y = size(V_x, 1);
+    [x,y] = meshgrid(i:win_size:num_win_x*win_size,i:win_size:num_win_y*win_size);
     
     figure;
     imshow(imread(path), []);
