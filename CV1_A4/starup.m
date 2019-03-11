@@ -1,1 +1,1 @@
-run('VLFEATROOT/toolbox/vl_setup')
+run('/VLFEATROOT/toolbox/vl_setup')
